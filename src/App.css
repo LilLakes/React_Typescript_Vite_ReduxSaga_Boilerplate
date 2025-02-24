@@ -5,3 +5,7 @@
 .gap {
     gap: 20px;
 }
+
+.no_point_ul {
+    list-style: none;
+}
