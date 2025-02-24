@@ -18,6 +18,7 @@ describe("TestComponent", () => {
         expect(screen.getByText("Typescript")).toBeTruthy();
         expect(screen.getByText("Vite")).toBeTruthy();
         expect(screen.getByText("Redux - Redux Saga")).toBeTruthy();
+        expect(screen.getByText("Vitest - React Testing Library")).toBeTruthy();
         expect(screen.getByRole("button", { name: "+1 Async" })).toBeTruthy();
         expect(screen.getByRole("button", { name: "+1" })).toBeTruthy();
         expect(screen.getByText("0")).toBeTruthy();

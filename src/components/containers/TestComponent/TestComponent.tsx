@@ -5,6 +5,7 @@ import { RootState } from "@/store/rootReducer";
 import { decrement, decrementAsync, increment, incrementAsync } from "@/store/counter/counterSlice";
 import { reactIcon, reduxIcon, typescriptIcon, viteIcon, vitestIcon } from "@/assets/icons";
 import { TestComponentProps } from "./types/TestComponent.types";
+import { CustomButton } from "@/components/common";
 
 /**
  * This component is a test component for the boilerplate
@@ -32,11 +33,11 @@ const TestComponent: React.FC<TestComponentProps> = () => {
             </ul>
 
             <div className="flex gap">
-                <button onClick={() => dispatch(decrementAsync())}>-1 Async</button>
-                <button onClick={() => dispatch(decrement())}>-1</button>
+                <CustomButton onClick={() => dispatch(decrementAsync())}>-1 Async</CustomButton>
+                <CustomButton onClick={() => dispatch(decrement())}>-1</CustomButton>
                 <p>{value}</p>
-                <button onClick={() => dispatch(increment())}>+1</button>
-                <button onClick={() => dispatch(incrementAsync())}>+1 Async</button>
+                <CustomButton onClick={() => dispatch(increment())}>+1</CustomButton>
+                <CustomButton onClick={() => dispatch(incrementAsync())}>+1 Async</CustomButton>
             </div>
 
         </>
