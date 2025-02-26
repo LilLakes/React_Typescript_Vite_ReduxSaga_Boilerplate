@@ -1,10 +1,10 @@
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor, render } from '@testing-library/react';
 import { RootState } from "@/store/rootReducer";
 import TestComponent from "../TestComponent";
 import { describe, expect, it } from 'vitest';
 import { renderWithRedux } from '@/utils/testingUtils';
 
-const renderTestComponentWithRedux = (initialStore: RootState) => {
+const renderTestComponentWithRedux = (initialStore: Partial<RootState>) => {
     renderWithRedux(<TestComponent/>, initialStore);
 }
 
@@ -19,12 +19,32 @@ describe("TestComponent", () => {
         expect(screen.getByText("Vite")).toBeTruthy();
         expect(screen.getByText("Redux - Redux Saga")).toBeTruthy();
         expect(screen.getByText("Vitest - React Testing Library")).toBeTruthy();
+
+        expect(screen.getByText("Hello, Developer")).toBeTruthy();
+        expect(screen.getByRole("button", { name: "Change greeting" })).toBeTruthy();
+        expect(screen.getByRole("button", { name: "Set name" })).toBeTruthy();
+        expect(screen.getByRole("textbox")).toBeTruthy();
+
         expect(screen.getByRole("button", { name: "+1 Async" })).toBeTruthy();
         expect(screen.getByRole("button", { name: "+1" })).toBeTruthy();
         expect(screen.getByText("0")).toBeTruthy();
         expect(screen.getByRole("button", { name: "-1" })).toBeTruthy();
         expect(screen.getByRole("button", { name: "-1 Async" })).toBeTruthy();
     })
+
+    it("Should allow the user to enter a name and update the greeting", () => {
+        renderTestComponentWithRedux({});
+        
+        const input = screen.getByPlaceholderText ("Insert name");
+        fireEvent.change(input, { target: { value: "Alice" } });
+
+        expect(input.getAttribute("value")).toBe("Alice");
+
+        const setNameButton = screen.getByRole("button", { name: "Set name" });
+        fireEvent.click(setNameButton);
+
+        expect(screen.getByText("Hello, Alice")).toBeTruthy();
+    });
 
     it("Display the correct counter value", () => {
         const initialStore: RootState = { counter: { value: 5 } };

@@ -27,6 +27,7 @@ export default defineConfig({
                 "eslint.config.js",     // Exclude config files
                 "**/index.ts",          // Exclude index files
                 "**/*.types.*",         // Exclude type files
+                "**/*.d.ts",            // Exclude type files
             ], 
         },
         //setupFiles: [], // Files to run before each test (for global setups)

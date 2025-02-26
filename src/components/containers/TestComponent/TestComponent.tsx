@@ -51,7 +51,7 @@ const TestComponent: React.FC<TestComponentProps> = () => {
             <div className="flex gap">
                 <CustomButton onClick={changeGreeting}>Change greeting</CustomButton>
                 <CustomButton onClick={() => setToGreet(name)}>Set name</CustomButton>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Insert name" />
                 <p>(example of custom hook)</p>
             </div>
 
