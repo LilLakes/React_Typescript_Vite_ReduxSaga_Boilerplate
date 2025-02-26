@@ -9,15 +9,19 @@ import rootSaga from "@/store/rootSaga";
 
 
 /**
- * Renders a React component with a Redux store for testing purpose
- *
- * @param component The component to render
- * @param initialStore The initial state of the Redux store
- * @returns An object with the result of `render` and the store
+ * Renders a React component with a Redux store configured for testing.
+ * 
+ * @param component - The React component to be rendered.
+ * @param initialStore - An optional partial initial state for the Redux store.
+ * 
+ * @returns An object containing:
+ * - The result of the render function from @testing-library/react, allowing for testing interactions.
+ * - The configured Redux store, enabling direct store manipulation or inspection.
  */
+
 export const renderWithRedux = (
     component: React.ReactElement,
-    initialStore: RootState
+    initialStore: Partial<RootState>
 ) => {
     const sagaMiddleware = createSagaMiddleware();
 

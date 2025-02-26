@@ -17,12 +17,16 @@ export default defineConfig({
             ], 
             reportsDirectory: './coverage', // Directory to store coverage reports
             exclude: [ // Exclude specific files or patterns from coverage
-                'node_modules/*',      // Exclude node_modules
-                '**/*.test.ts',        // Exclude test files
-                "vite.config.ts",
-                "vitest.config.ts",
-                "eslint.config.js",
-                "**/index.ts"
+                'node_modules/*',       // Exclude node_modules
+                "dist/*",               // Exclude dist
+                "coverage/*",           // Exclude coverage
+                "scripts/*",            // Exclude scripts
+                '**/*.test.ts',         // Exclude test files
+                "vite.config.ts",       // Exclude config files
+                "vitest.config.ts",     // Exclude config files
+                "eslint.config.js",     // Exclude config files
+                "**/index.ts",          // Exclude index files
+                "**/*.types.*",         // Exclude type files
             ], 
         },
         //setupFiles: [], // Files to run before each test (for global setups)
