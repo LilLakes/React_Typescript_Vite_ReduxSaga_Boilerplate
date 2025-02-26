@@ -1,3 +1,4 @@
+import { readFileSync, writeFileSync } from "fs";
 import { mkdir, writeFile, stat, readFile } from "fs/promises";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -132,30 +133,53 @@ async function createStructure() {
         await writeFile(join(folderPath, fileName), template, "utf8");
       }
     }
-    
-    addToRootSaga()
+
+
+    //Add to rootSaga
+    const sagaPath = join(basePath, "..", "rootSaga.ts"); // Sostituisci con il percorso corretto
+    let sagaContent = readFileSync(sagaPath, "utf8");
+    const sagaImportStatement = `import ${moduleName}Saga from "./${moduleName}/${moduleName}Saga";\n`;
+    const sagaExportRegex = /yield all\(\[([^}]*)\]\)/;
+
+    if (sagaContent.includes(sagaImportStatement)) {
+        console.log("Il componente è già presente nel file.");
+        return;
+    }
+
+    // Aggiunge l'import
+    sagaContent = sagaContent.replace(/(import .*;\n)/, `$1${sagaImportStatement}`);
+
+    // Aggiunge l'export
+    sagaContent = sagaContent.replace(sagaExportRegex, (match, exports) => {
+        return `yield all([${exports.trim()}, ${moduleName}Saga()])`;
+    });
+
+    writeFileSync(sagaPath, sagaContent, "utf8");
+
+    //Add to rootReducer
+    const indexPath = join(basePath, "..", "rootReducer.ts"); // Sostituisci con il percorso corretto
+    let content = readFileSync(indexPath, "utf8");
+    const importStatement = `import ${moduleName}Reducer from "./${moduleName}/${moduleName}Slice";\n`;
+    const exportRegex = /combineReducers\(\{([^}]*)\}\)/;
+
+    if (content.includes(importStatement)) {
+        console.log("Il componente è già presente nel file.");
+        return;
+    }
+
+    // Aggiunge l'import
+    content = content.replace(/(import .*;\n)/, `$1${importStatement}`);
+
+    // Aggiunge l'export
+    content = content.replace(exportRegex, (match, exports) => {
+        return `combineReducers({\n\t${exports.trim()},\n\t${moduleName}: ${moduleName}Reducer\n})`;
+    });
+
+    writeFileSync(indexPath, content, "utf8");
 
     console.log(`✅ Store module "${moduleName}" creato con successo!`);
   } catch (err) {
     console.error("❌ Errore durante la creazione:", err);
-  }
-}
-
-async function addToRootSaga() {
-  const rootSagaPath = join(__dirname, "..", "src", "store", "rootSaga.ts");
-  const sagaImport = `import ${moduleName}Saga from './${moduleName}/${moduleName}Saga';\n`;
-  const sagaCall = `${moduleName}Saga()`;
-
-  try {
-    const content = await readFile(rootSagaPath, "utf8");
-    const updatedContent = content.replace(/yield all\(\[([^]*)\]/, (match, p1) => {
-      return `yield all([${p1},\n\t\t${sagaCall}]`;
-    });
-
-    await writeFile(rootSagaPath, `${sagaImport}${updatedContent}`, "utf8");
-    console.log(`✅ Saga "${moduleName}Saga" aggiunta a rootSaga.ts con successo!`);
-  } catch (err) {
-    console.error(`❌ Errore durante l'aggiornamento di rootSaga.ts: ${err}`);
   }
 }
 
