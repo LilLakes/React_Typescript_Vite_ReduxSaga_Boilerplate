@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "generate:component": "node ./scripts/generateComponent.js",
+    "generate:store": "node ./scripts/generateStore.js"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.1",
