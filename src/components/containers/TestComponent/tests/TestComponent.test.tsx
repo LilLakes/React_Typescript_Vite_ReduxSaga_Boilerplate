@@ -1,4 +1,4 @@
-import { screen, fireEvent, waitFor, render } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { RootState } from "@/store/rootReducer";
 import TestComponent from "../TestComponent";
 import { describe, expect, it } from 'vitest';

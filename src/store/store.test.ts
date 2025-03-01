@@ -23,7 +23,7 @@ describe('Redux Store', () => {
 
     it('should run the root saga', () => {
         const sagaMiddleware = createSagaMiddleware();
-        const testStore = configureStore({
+        configureStore({
             reducer: rootReducer,
             middleware: (getDefaultMiddleware) =>
                 getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),
