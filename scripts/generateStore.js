@@ -9,23 +9,23 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const moduleName = process.argv[2];
 
 if (!moduleName) {
-  console.error("❌ Errore: Specifica il nome del modulo.");
+  console.error("❌ Error: Specify the component name.");
   process.exit(1);
 }
 
 const basePath = join(__dirname, "..", "src", "store", moduleName.toLowerCase());
 
-// Funzione per controllare se la cartella esiste già
+// Function to check if the folder already exists
 async function checkIfExists(path) {
   try {
     await stat(path);
-    return true;
+    return true; // The folder exists
   } catch (error) {
-    return false;
+    return false; //The folder doesn't exists
   }
 }
 
-// 📌 TEMPLATE
+// TEMPLATES
 const sagaTemplate = `import { delay, put, takeEvery } from 'redux-saga/effects';
 import { ${moduleName}Action, ${moduleName}ActionAsync } from './${moduleName}Slice';
 
@@ -105,7 +105,7 @@ describe('${moduleName}Slice', () => {
   });
 });`;
 
-// 📌 STRUTTURA DELLE CARTELLE E FILE
+// FOLDER AND FILE STRUCTURE
 const structure = {
   "": [
     { fileName: `${moduleName}Saga.ts`, template: sagaTemplate },
@@ -121,7 +121,7 @@ async function createStructure() {
   try {
     const exists = await checkIfExists(basePath);
     if (exists) {
-      console.error(`❌ Errore: Esiste già un modulo store con il nome "${moduleName}".`);
+      console.error(`❌ Error: A store module with the name "${moduleName}" already exists.`);
       process.exit(1);
     }
 
@@ -136,20 +136,20 @@ async function createStructure() {
 
 
     //Add to rootSaga
-    const sagaPath = join(basePath, "..", "rootSaga.ts"); // Sostituisci con il percorso corretto
+    const sagaPath = join(basePath, "..", "rootSaga.ts");
     let sagaContent = readFileSync(sagaPath, "utf8");
     const sagaImportStatement = `import ${moduleName}Saga from "./${moduleName}/${moduleName}Saga";\n`;
     const sagaExportRegex = /yield all\(\[([^}]*)\]\)/;
 
     if (sagaContent.includes(sagaImportStatement)) {
-        console.log("Il componente è già presente nel file.");
+        console.log("The component is already present in the file.");
         return;
     }
 
-    // Aggiunge l'import
+    // Adds the import
     sagaContent = sagaContent.replace(/(import .*;\n)/, `$1${sagaImportStatement}`);
 
-    // Aggiunge l'export
+    // Adds the export
     sagaContent = sagaContent.replace(sagaExportRegex, (match, exports) => {
         return `yield all([${exports.trim()}, ${moduleName}Saga()])`;
     });
@@ -157,29 +157,29 @@ async function createStructure() {
     writeFileSync(sagaPath, sagaContent, "utf8");
 
     //Add to rootReducer
-    const indexPath = join(basePath, "..", "rootReducer.ts"); // Sostituisci con il percorso corretto
+    const indexPath = join(basePath, "..", "rootReducer.ts");
     let content = readFileSync(indexPath, "utf8");
     const importStatement = `import ${moduleName}Reducer from "./${moduleName}/${moduleName}Slice";\n`;
     const exportRegex = /combineReducers\(\{([^}]*)\}\)/;
 
     if (content.includes(importStatement)) {
-        console.log("Il componente è già presente nel file.");
+        console.log("The component is already present in the file.");
         return;
     }
 
-    // Aggiunge l'import
+    // Adds the import
     content = content.replace(/(import .*;\n)/, `$1${importStatement}`);
 
-    // Aggiunge l'export
+    // Adds the export
     content = content.replace(exportRegex, (match, exports) => {
         return `combineReducers({\n\t${exports.trim()},\n\t${moduleName}: ${moduleName}Reducer\n})`;
     });
 
     writeFileSync(indexPath, content, "utf8");
 
-    console.log(`✅ Store module "${moduleName}" creato con successo!`);
+    console.log(`✅ Component ${componentName} generated successfully`);
   } catch (err) {
-    console.error("❌ Errore durante la creazione:", err);
+    console.error("❌ Error during generation:", err);
   }
 }
 

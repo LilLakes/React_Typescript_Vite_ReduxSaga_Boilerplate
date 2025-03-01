@@ -7,23 +7,23 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const componentName = process.argv[2];
 
 if (!componentName) {
-  console.error("❌ Errore: Specifica il nome del componente.");
+  console.error("❌ Error: Specify the component name.");
   process.exit(1);
 }
 
 const basePath = join(__dirname, "..", "src", "components", "containers", componentName);
 
-// Funzione per controllare se la cartella esiste già
+// Function to check if the folder already exists
 async function checkIfExists(path) {
   try {
     await stat(path);
-    return true; // La cartella esiste
+    return true; // The folder exists
   } catch (error) {
-    return false; // La cartella non esiste
+    return false; // The folder does not exist
   }
 }
 
-// 📌 TEMPLATE
+// TEMPLATES
 const tsxTemplate = `import "./${componentName}.css";
 import { ${componentName}Props } from "./types/${componentName}.types";
 
@@ -66,7 +66,7 @@ export type ${componentName}Props = PropsWithChildren & {
 
 const widgetIndexTemplate = ``;
 
-// 📌 STRUTTURA DELLE CARTELLE E FILE
+// FOLDER AND FILE STRUCTURE
 const structure = {
   "": [
     { fileName: `${componentName}.tsx`, template: tsxTemplate },
@@ -88,11 +88,11 @@ async function createStructure() {
   try {
     const exists = await checkIfExists(basePath);
     if (exists) {
-      console.error(`❌ Errore: Esiste già un componente con il nome "${componentName}".`);
+      console.error(`❌ Error: A component with the name "${componentName}" already exists`);
       process.exit(1);
     }
 
-    // Creazione della struttura delle cartelle e dei file
+    // Creation of the folder and file structure
     for (const [folder, files] of Object.entries(structure)) {
       const folderPath = join(basePath, folder);
       await mkdir(folderPath, { recursive: true });
@@ -102,29 +102,29 @@ async function createStructure() {
       }
     }
 
-    const indexPath = join(basePath, "..", "index.ts"); // Sostituisci con il percorso corretto
+    const indexPath = join(basePath, "..", "index.ts"); // Replace with the correct path
     let content = readFileSync(indexPath, "utf8");
     const importStatement = `import { ${componentName} } from "./${componentName}";\n`;
     const exportRegex = /export \{([^}]*)\}/;
 
     if (content.includes(importStatement)) {
-        console.log("Il componente è già presente nel file.");
+        console.log("The component is already present in the file.");
         return;
     }
 
-    // Aggiunge l'import
+    // Adds the import
     content = content.replace(/(import .*;\n)/, `$1${importStatement}`);
 
-    // Aggiunge l'export
+    // Adds the export
     content = content.replace(exportRegex, (match, exports) => {
         return `export {${exports.trim()}, ${componentName}}`;
     });
 
     writeFileSync(indexPath, content, "utf8");
 
-    console.log(`✅ Componente ${componentName} creato con successo!`);
+    console.log(`✅ Component ${componentName} generated successfully`);
   } catch (err) {
-    console.error("❌ Errore durante la creazione:", err);
+    console.error("❌ Error during generation:", err);
   }
 }
 
