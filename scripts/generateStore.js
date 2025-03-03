@@ -177,7 +177,7 @@ async function createStructure() {
 
     writeFileSync(indexPath, content, "utf8");
 
-    console.log(`✅ Component ${componentName} generated successfully`);
+    console.log(`✅ Redux ${moduleName} slice and saga generated successfully`);
   } catch (err) {
     console.error("❌ Error during generation:", err);
   }
